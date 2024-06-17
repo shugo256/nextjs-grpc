@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option go_package = "github.com/shugo256/nextjs-grpc/helloworld/proto";
+
+package helloworld;
+
+service HelloWorldService {
+  rpc SayHello(HelloWorldRequest) returns (HelloWorldResponse) {}
+}
+
+message HelloWorldRequest {
+  int32 num_repeat = 1;
+}
+
+message HelloWorldResponse {
+  string message = 1;
+}
