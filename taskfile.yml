@@ -1,0 +1,42 @@
+version: '3'
+
+tasks:
+  run:
+    deps:
+      - run-helloworld
+      - run-web
+
+  # Web UI (./web)
+  run-web:
+    cmds:
+      - npm run dev
+    dir: web
+    ignore_error: true
+
+  # HelloWorldService (./helloworld)
+  run-helloworld:
+    cmds:
+      - go run main.go
+    dir: helloworld
+    deps: [helloworld-go-mod-tidy, helloworld-pb]
+    ignore_error: true
+
+  helloworld-pb:
+    cmds:
+      - protoc helloworld/proto/service.proto 
+          --go_out=. --go-grpc_out=.
+          --go_opt=paths=source_relative --go-grpc_opt=paths=source_relative
+    sources:
+      - helloworld/proto/service.proto
+    generates:
+      - helloworld/proto/service.pb.go
+      - helloworld/proto/service_grpc.pb.go
+
+  helloworld-go-mod-tidy:
+    cmds:
+      - go mod tidy
+    dir: helloworld
+    sources:
+      - helloworld/*.go
+    generates:
+      - helloworld/go.mod
